@@ -80,13 +80,13 @@ public:
 
 public:
     // 初始化新接受的连接
-    void init(int sockfd, const sockaddr_in &addr);
+    void init(int sockfd, const sockaddr_in &addr, char *, int, int, string user, string passwd, string sqlname);
     // 关闭连接
     void close_conn(bool real_close = true);
     //处理客户请求
     void process();
     // 读取浏览器端发来的全部数据
-    bool read();
+    bool read_once();
     // 非阻塞写操作
     bool write();
     sockaddr_in *get_address()
@@ -96,7 +96,7 @@ public:
     // CGI使用线程池初始化数据库表
     void initmysql_result(connection_pool *pool);
     int timer_flag;
-    int improv;
+    int improv; // ???
 
 private:
     // 初始化连接
@@ -189,12 +189,12 @@ private:
     char *doc_root;
 
     map<string, string> m_users;    // ???
-    int m_TRIGMode;     // ???
+    int m_TRIGMode;     // 是否为边缘触发
     int m_close_log;    // ???
 
     char sql_user[100];
     char sql_passwd[100];
-    char sql_name[100];
+    char sql_name[100]; // ??? 数据库名称吗
 };
 
 

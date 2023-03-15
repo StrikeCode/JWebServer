@@ -460,7 +460,7 @@ http_conn::HTTP_CODE http_conn::do_request()
         free(m_url_real);
 
         // 将用户名和密码提取出来
-        // user=123&passwd=123
+        // user=123&password=123
         // 打印m_string
         char name[100], password[100];
         int i;
@@ -472,7 +472,7 @@ http_conn::HTTP_CODE http_conn::do_request()
         name[i - 5] = '\0';
 
         int j = 0;
-        // ??? 为什么 i = i + 10
+        // &password= 长度为10
         for(i = i + 10; m_string[i] != '\0'; ++i, ++j)
         {
             password[j] = m_string[i];
@@ -640,6 +640,7 @@ bool http_conn::write()
         bytes_to_send -= temp;
         bytes_have_send += temp;
         // 发送的数据已经超过第一个io向量的大小
+        // 更新第二个块当前发送内容的起始位置和程度
         if(bytes_have_send >= m_iv[0].iov_len)
         {
             m_iv[0].iov_len = 0;

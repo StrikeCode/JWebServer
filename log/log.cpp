@@ -21,7 +21,8 @@ Log::~Log()
     }
 }
 
-bool Log::init(const char *file_name, int close_log, int log_buf,int log_buf_size = 8192, int split_lines = 5000000, int max_queue_size = 0)
+// 函数定义处不能写默认值
+bool Log::init(const char *file_name, int close_log, int log_buf_size, int split_lines, int max_queue_size)
 {
     // 若设置了max_queue_size 则设置为异步
     // 同步不需要阻塞队列
@@ -52,14 +53,14 @@ bool Log::init(const char *file_name, int close_log, int log_buf,int log_buf_siz
 
     if(p == NULL) // 指定的文件完整路径名，就在当前目录下
     {
-        sprintf(log_full_name, 255, "%d_%02d_%02d_%s", my_tm.tm_year + 1900, my_tm.tm_mon + 1, my_tm.tm_mday, file_name);
+        snprintf(log_full_name, 255, "%d_%02d_%02d_%s", my_tm.tm_year + 1900, my_tm.tm_mon + 1, my_tm.tm_mday, file_name);
     }
     else 
     {
         strcpy(log_name, p + 1);
         // 获取路径
         strncpy(dir_name, file_name, p - file_name + 1);
-        sprintf(log_full_name, 255, "%s%d_%02d_%02d_%s", dir_name, my_tm.tm_year + 1900, my_tm.tm_mon + 1, my_tm.tm_mday, log_name);
+        snprintf(log_full_name, 255, "%s%d_%02d_%02d_%s", dir_name, my_tm.tm_year + 1900, my_tm.tm_mon + 1, my_tm.tm_mday, log_name);
     }
 
     m_today = my_tm.tm_mday;
@@ -80,7 +81,7 @@ void Log::write_log(int level, const char *format, ...)
     gettimeofday(&now, NULL);
     time_t t = now.tv_sec;
     struct tm *sys_tm = localtime(&t);
-    struct tm my_tm = &sys_tm;
+    struct tm my_tm = *sys_tm;
     char s[16] = {0};
 
     // 日志分级
@@ -124,9 +125,9 @@ void Log::write_log(int level, const char *format, ...)
         }
         else // 超行分页
         {
-            snprintf(new_log, "%s%s%s.%lld", dir_name, tail, log_name, m_count / m_split_lines);
+            snprintf(new_log, 255, "%s%s%s.%lld", dir_name, tail, log_name, m_count / m_split_lines);
         }
-        m_fp = fopen(new_log, a);
+        m_fp = fopen(new_log, "a");
     }
 
     m_mutex.unlock();

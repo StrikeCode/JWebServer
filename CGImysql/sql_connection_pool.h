@@ -45,18 +45,18 @@ public:
     string m_url;   // 主机地址
     string m_Port;  // 数据库端口号
     string m_User;  // 登录数据库用户名
-    string m_Password;  // 登录数据库密码
+    string m_PassWord;  // 登录数据库密码
     string m_DatabaseName; // 使用数据库名
     int m_close_log;    // 是否记录日志
 };
 
 // 将连接对象构造和析构封装
-class ConnectionRAII
+class connectionRAII
 {
 public: 
     // 要修改的变量是MYSQL *,所以要传MYSQL **
-    ConnectionRAII(MYSQL **con, connection_pool *connPool);
-    ~ConnectionRAII();
+    connectionRAII(MYSQL **con, connection_pool *connPool);
+    ~connectionRAII();
 
 private:
     MYSQL *conRAII;

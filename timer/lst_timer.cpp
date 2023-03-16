@@ -198,7 +198,7 @@ void Utils::sig_handler(int sig)
     errno = save_errno;
 }
 
-void Utils::addsig(int sig, void(handler)(int), bool restart = true)
+void Utils::addsig(int sig, void(handler)(int), bool restart)
 {
     struct sigaction sa;
     memset(&sa, '\0', sizeof(sa));

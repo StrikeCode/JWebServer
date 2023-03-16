@@ -25,6 +25,7 @@ public:
     ~threadpool();
     // 往请求队列中添加一条客户请求
     bool append(T *request, int state);
+    bool append_p(T *request);
 
 private:
     // 工作线程运行的函数，不断从工作队列中取任务并执行
@@ -59,7 +60,7 @@ threadpool<T>::threadpool(int actor_model, connection_pool *connPool, int thread
     // 创建thread_number个线程，将他们设置为分离线程
     for(int i = 0; i < thread_number; ++i)
     {
-        printf("create the %dth thread\n", i);
+        //printf("create the %dth thread\n", i);
         // 静态成员函数worker要调用非静态成员，采用传一个指向实例对象的this指针
         if(pthread_create(m_threads + i, NULL, worker, this) != 0)
         {
@@ -106,7 +107,7 @@ bool threadpool<T>::append_p(T* request)
         m_queuelocker.unlock();
         return false;
     }
-    request->m_state = state; // ???
+    
     m_workqueue.push_back(request);
     m_queuelocker.unlock();
     m_queuestat.post();
@@ -168,7 +169,7 @@ void threadpool<T>::run()
                 }
                 else 
                 {
-                    request->imrpov = 1;
+                    request->improv = 1;
                     request->timer_flag = 1;
                 }
             }

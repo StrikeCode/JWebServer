@@ -32,7 +32,7 @@ public:
     // close_log:是否关闭日志
     // split_lines: 每个日志文件最大行数
     // max_queue_size：阻塞队列最大长度
-    bool init(const char *file_name, int close_log, int log_buf,int log_buf_size = 8192, int split_lines = 5000000, int max_queue_size = 0)
+    bool init(const char *file_name, int close_log, int log_buf_size = 8192, int split_lines = 5000000, int max_queue_size = 0);
 
     // 日志分级与分文件写入
     void write_log(int level, const char *format, ...);

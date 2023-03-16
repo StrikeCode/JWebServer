@@ -28,7 +28,7 @@ void connection_pool::init(string url, string User, string PassWord, string Data
     m_url = url;
     m_Port = Port;
     m_User = User;
-    m_Password = PassWord;
+    m_PassWord = PassWord;
     m_DatabaseName = DataBaseName;
     m_close_log = close_log;
     
@@ -82,14 +82,14 @@ MYSQL *connection_pool::GetConnection()
 
 bool connection_pool::ReleaseConnection(MYSQL *conn)
 {
-    if(NULL == con)
+    if(NULL == conn)
     {
         return false;
     }
 
     lock.lock();
 
-    connList.push_back(con);
+    connList.push_back(conn);
     ++m_FreeConn;
     --m_CurConn;
 
@@ -128,7 +128,7 @@ connection_pool::~connection_pool()
 }
 
 // ？？不大理解这种实现方式
-ConnectionRAII::ConnectionRAII(MYSQL **con, connection_pool *connPool)
+connectionRAII::connectionRAII(MYSQL **con, connection_pool *connPool)
 {
     *con = connPool->GetConnection(); // 获取连接通过这个RAII类来实现
     
@@ -136,7 +136,7 @@ ConnectionRAII::ConnectionRAII(MYSQL **con, connection_pool *connPool)
     poolRAII = connPool;
 }
 
-ConnectionRAII::~ConnectionRAII()
+connectionRAII::~connectionRAII()
 {
     poolRAII->ReleaseConnection(conRAII);
 }

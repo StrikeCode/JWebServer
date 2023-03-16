@@ -178,7 +178,7 @@ public:
     bool pop(T &item, int ms_timeout)
     {
         struct timespec t = {0, 0};
-        struct timeval now = {0, 0}
+        struct timeval now = {0, 0};
         
         gettimeofday(&now, NULL);
         m_mutex.lock();
@@ -216,6 +216,6 @@ private:
     int m_max_size;
     int m_front;
     int m_back;
-}
+};
 
 #endif

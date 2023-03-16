@@ -81,7 +81,7 @@ private:
     util_timer *tail;
 };
 
-// 工具类
+// 工具类(定时器、IO设置)
 class Utils
 {
 public:

@@ -22,13 +22,13 @@ Config::Config()
 
     close_log = 0;  // 是否关闭日志
 
-    actor_model;    // 并发模型选择
+    actor_model = 0;    // 并发模型选择,默认proactor
 }
 
 void Config::parse_arg(int argc, char *argv[])
 {
     int opt;
-    const char *str = "p:l:m:o:s:t:c:a";
+    const char *str = "p:l:m:o:s:t:c:a:";
     // 不断的解析出选项的对应参数
     while((opt = getopt(argc, argv, str)) != -1)
     {

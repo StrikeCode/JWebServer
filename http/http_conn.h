@@ -38,7 +38,7 @@ static const int READ_BUFFER_SIZE = 2048;
 static const int WRITE_BUFFER_SIZE = 1024;
 // HTTP请求方法，但仅支持GET
 enum METHOD{GET = 0, POST, HEAD, PUT, DELTE,
-            TRACE, OPTIONS, CONNECT, PATCH};
+            TRACE, OPTIONS, CONNECT, PATH};
 // 解析客户请求时，主状态机所处的状态
 enum CHECK_STATE
 {

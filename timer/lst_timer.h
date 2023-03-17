@@ -53,7 +53,7 @@ public:
 class sort_timer_lst
 {
 public:
-    sort_timer_lst() : head(NULL), tail(NULL){};
+    sort_timer_lst();
     // 删除所有定时器
     ~sort_timer_lst();
 

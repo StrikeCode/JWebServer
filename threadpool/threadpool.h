@@ -51,7 +51,8 @@ threadpool<T>::threadpool(int actor_model, connection_pool *connPool, int thread
     {
         throw std::exception();
     }
-    m_threads = new pthread_t(m_thread_number);
+    //m_threads = new pthread_t(m_thread_number);
+    m_threads = new pthread_t[m_thread_number];
     if(!m_threads)
     {
         throw std::exception();

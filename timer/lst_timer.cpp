@@ -1,6 +1,11 @@
 #include "lst_timer.h"
 #include "../http/http_conn.h"
 
+sort_timer_lst::sort_timer_lst()
+{
+    head = NULL;
+    tail = NULL;
+}
 sort_timer_lst::~sort_timer_lst()
 {
     util_timer *tmp = head;

@@ -105,7 +105,6 @@ void http_conn::close_conn(bool real_close)
 {
     if (real_close && (m_sockfd != -1))
     {
-        printf("close %d\n", m_sockfd); // 试着改为LOGO输出
         removefd(m_epollfd, m_sockfd);
         m_sockfd = -1;
         m_user_count--; // 客户数量-1
@@ -349,7 +348,7 @@ http_conn::HTTP_CODE http_conn::parse_headers(char *text)
         }
     }
     // 处理Content-Length 头部字段
-    else if (strncasecmp(text, "Content-Length:", 15) == 0)
+    else if (strncasecmp(text, "Content-length:", 15) == 0)
     {
         text += 15;
         // 跳过" " 和 \t
@@ -361,7 +360,8 @@ http_conn::HTTP_CODE http_conn::parse_headers(char *text)
         text += 5;
         // 跳过空格和制表符
         text += strspn(text, " \t");
-        printf("the reques host is:%s\n", text);
+        //printf("the reques host is:%s\n", text);
+        m_host = text;
     }
     else
     {
@@ -392,7 +392,7 @@ http_conn::HTTP_CODE http_conn::process_read()
     char *text = 0;
     // 主状态机，已读出完整的行或现场读一行
     // parse_line为从状态机具体实现
-    while (((m_check_state == CHECK_STATE_CONTENT) && (line_status == LINE_OK)) || ((line_status == parse_line()) == LINE_OK))
+    while (((m_check_state == CHECK_STATE_CONTENT) && (line_status == LINE_OK)) || ((line_status = parse_line()) == LINE_OK))
     {
         text = get_line();
         m_start_line = m_checked_idx; // 记录下一行的 起始位置
@@ -706,26 +706,22 @@ bool http_conn::add_status_line(int status, const char *title)
 // 添加响应的头部
 bool http_conn::add_headers(int content_len)
 {
-    // add_content_length(content_len); // Content-Length
-    // add_linger(); // Connection
-    // add_blank_line(); // /r/n
-
     return add_content_length(content_len) && add_linger() && add_blank_line();
 }
 
 bool http_conn::add_content_length(int content_len)
 {
-    return add_response("Content-Length: %d\r\n", content_len);
+    return add_response("Content-Length:%d\r\n", content_len);
 }
 
 bool http_conn::add_content_type()
 {
-    return add_response("Content-Type: %s\r\n", "text/html");
+    return add_response("Content-Type:%s\r\n", "text/html");
 }
 
 bool http_conn::add_linger()
 {
-    return add_response("Connection: %s\r\n", (m_linger == true) ? "keep-alive" : "close");
+    return add_response("Connection:%s\r\n", (m_linger == true) ? "keep-alive" : "close");
 }
 
 bool http_conn::add_blank_line()
@@ -769,16 +765,6 @@ bool http_conn::process_write(HTTP_CODE ret)
         add_status_line(403, error_403_title);
         add_headers(strlen(error_403_form));
         if (!add_content(error_403_form))
-        {
-            return false;
-        }
-        break;
-    }
-    case NO_RESOURCE:
-    {
-        add_status_line(404, error_404_title);
-        add_headers(strlen(error_404_form));
-        if (!add_content(error_404_form))
         {
             return false;
         }

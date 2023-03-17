@@ -10,7 +10,7 @@ WebServer::WebServer()
     char root[6] = "/root"; // 资源文件的的路径
     m_root = (char *)malloc(strlen(server_path) + strlen(root) + 1);
     strcpy(m_root, server_path);
-    strcpy(m_root, root); // m_root = /home/jyhlinux/share/JWebServer/root
+    strcat(m_root, root); // m_root = /home/jyhlinux/share/JWebServer/root
 
     users_timer = new client_data[MAX_FD]; // 连接资源数组（包含对应定时器）
 }
@@ -133,7 +133,7 @@ void WebServer::eventListen()
     assert(ret >= 0);
     ret = listen(m_listenfd, 5);
     assert(ret >= 0);
-
+    LOG_INFO("Listen on port:%d", m_port);
     utils.init(TIMESLOT);
 
     epoll_event events[MAX_EVENT_NUMBER];
@@ -316,7 +316,7 @@ void WebServer::dealwithread(int sockfd)
         if(users[sockfd].read_once())
         {
             LOG_INFO("deal with the client(%s)", inet_ntoa(users[sockfd].get_address()->sin_addr));
-
+            // 若检测到读事件，将该事件放到任务队列，线程争抢，通过锁防止惊群，信号量通知任务量
             m_pool->append_p(users + sockfd);
             if(timer)
             {
